@@ -11,7 +11,7 @@ part 'location_state.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   Position? _currentPosition;
-  Placemark? _currenLocationName;
+  // Placemark? _currenLocationName;
   String? _country;
   final Helper _locationService = Helper();
   LocationBloc() : super(LocationState()) {
@@ -46,7 +46,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     print('CURRENT POSITION : $_currentPosition');
 
     _country=await _locationService.getLocationName(_currentPosition);
-    print('CURRENT LOCATION NAME: $_currenLocationName');    
+    // print('CURRENT LOCATION NAME: $_currenLocationName');    
     print('CURRENT countr NAME: $_country');    
     emit(LocationState(country: _country));
   }

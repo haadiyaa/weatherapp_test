@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:weatherapp_zeoptic/blocs/loctionbloc/location_bloc.dart';
+import 'package:weatherapp_zeoptic/blocs/weatherbloc/weather_bloc.dart';
 import 'package:weatherapp_zeoptic/utils/appcolors.dart.dart';
 import 'package:weatherapp_zeoptic/utils/appdimensions.dart';
 import 'package:weatherapp_zeoptic/utils/apptextstyles.dart';
@@ -12,8 +13,15 @@ class HomePageWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LocationBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LocationBloc(),
+        ),
+        BlocProvider(
+          create: (context) => WeatherBloc(),
+        ),
+      ],
       child: HomePage(),
     );
   }
@@ -60,15 +68,32 @@ class _HomePageState extends State<HomePage> {
                 style: MyAppTextStyles.subtitle,
               ),
               const SizedBox(height: 20),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.cloud, color: Colors.white, size: 100),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text('13°', style: MyAppTextStyles.mainTemperature),
-                ],
+              BlocBuilder<WeatherBloc, WeatherState>(
+                builder: (context, state) {
+                  if (state.weatherCurrentModel != null) {
+                    final temp = state.weatherCurrentModel!.main.temp;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.cloud, color: Colors.white, size: 100),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text('$temp°', style: MyAppTextStyles.mainTemperature),
+                      ],
+                    );
+                  }
+                  return const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.cloud, color: Colors.white, size: 100),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text('13°', style: MyAppTextStyles.mainTemperature),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 10),
               const Text(
@@ -238,6 +263,8 @@ class LocationWidget extends StatelessWidget {
     return BlocBuilder<LocationBloc, LocationState>(
       builder: (context, state) {
         if (state.country != null) {
+          BlocProvider.of<WeatherBloc>(context)
+              .add(FetchCurrentWeather(city: state.country!));
           return Text(
             state.country!.toUpperCase(),
             style: MyAppTextStyles.subtitle.copyWith(
