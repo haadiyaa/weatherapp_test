@@ -3,7 +3,7 @@ import 'package:weatherapp_zeoptic/utils/appcolors.dart.dart';
 
 class MyAppTextStyles {
   static const TextStyle mainTemperature = TextStyle(
-    fontSize: 100,
+    fontSize: 94,
     fontWeight: FontWeight.w400,
     color: MyAppColors.mainText,
   );
@@ -11,7 +11,7 @@ class MyAppTextStyles {
   static const TextStyle subtitle = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w400,
-    // color: MyAppColors.subtitleText,
+    color: MyAppColors.subtitleText,
   );
 
   static const TextStyle location = TextStyle(

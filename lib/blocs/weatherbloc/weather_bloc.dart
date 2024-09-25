@@ -20,7 +20,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     WeatherCurrentModel? _weather;
     try {
       final apiUrl =
-          "${Secrets.baseUrlCurrent}${Secrets.city}${event.city}&appid=${Secrets.apiKey}";
+          "${Secrets.baseUrlCurrent}${Secrets.city}${event.city}&appid=${Secrets.apiKey}&units=metric";
       final response = await http.get(Uri.parse(apiUrl));
 
       if (response.statusCode == 200) {

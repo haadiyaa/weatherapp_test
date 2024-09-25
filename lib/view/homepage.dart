@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:weatherapp_zeoptic/blocs/loctionbloc/location_bloc.dart';
 import 'package:weatherapp_zeoptic/blocs/weatherbloc/weather_bloc.dart';
 import 'package:weatherapp_zeoptic/utils/appcolors.dart.dart';
+import 'package:weatherapp_zeoptic/utils/appconstants.dart';
 import 'package:weatherapp_zeoptic/utils/appdimensions.dart';
 import 'package:weatherapp_zeoptic/utils/apptextstyles.dart';
 import 'package:weatherapp_zeoptic/view/widgets/froastedglassbox.dart';
@@ -22,7 +23,7 @@ class HomePageWrapper extends StatelessWidget {
           create: (context) => WeatherBloc(),
         ),
       ],
-      child: HomePage(),
+      child: const HomePage(),
     );
   }
 }
@@ -61,12 +62,25 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               const SizedBox(height: 30),
+              // const Row(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   children: [
+              //     Icon(
+              //       Icons.location_on_outlined,
+              //       color: MyAppColors.forecastText,
+              //       size: 16,
+              //     ),
+              //     SizedBox(
+              //       width: 5,
+              //     ),
+              //     Text(
+              //       'Current Location',
+              //       style: MyAppTextStyles.subtitle,
+              //     ),
+              //   ],
+              // ),
               LocationWidget(),
-              // TextField(),
-              const Text(
-                'Current Location',
-                style: MyAppTextStyles.subtitle,
-              ),
+              
               const SizedBox(height: 20),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
@@ -75,11 +89,15 @@ class _HomePageState extends State<HomePage> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.cloud, color: Colors.white, size: 100),
+                        Image(
+                          image: AssetImage(MyAppConstants.icons[
+                              state.weatherCurrentModel!.weather[0].main]),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text('$temp°', style: MyAppTextStyles.mainTemperature),
+                        Text('${temp.toStringAsFixed(0)}\u00B0 C',
+                            style: MyAppTextStyles.mainTemperature),
                       ],
                     );
                   }
@@ -90,15 +108,132 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Text('13°', style: MyAppTextStyles.mainTemperature),
+                      Text('...° C', style: MyAppTextStyles.mainTemperature),
                     ],
                   );
                 },
               ),
-              const SizedBox(height: 10),
-              const Text(
-                'Partly Cloud - H:17° L:4°',
-                style: MyAppTextStyles.subtitle,
+              const SizedBox(height: 5),
+              BlocBuilder<WeatherBloc, WeatherState>(
+                builder: (context, state) {
+                  if (state.weatherCurrentModel != null) {
+                    final desc = state.weatherCurrentModel!.weather[0];
+                    return Text(
+                      '${desc.main.toUpperCase()} - ${desc.description.toUpperCase()}',
+                      style: MyAppTextStyles.subtitle,
+                    );
+                  }
+                  return const Text(
+                    '_ _ _ -_ _ _ _',
+                    style: MyAppTextStyles.subtitle,
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              BlocBuilder<WeatherBloc, WeatherState>(
+                builder: (context, state) {
+                  if (state.weatherCurrentModel != null) {
+                    final data = state.weatherCurrentModel!.main;
+                    return FrostedGlassBox(
+                      width: size.width * 0.9,
+                      height: size.height * 0.12,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text('Pressure',
+                                  style: MyAppTextStyles.cardTitle),
+                              const SizedBox(height: 8),
+                              Text(data.pressure.toString(),
+                                  style: MyAppTextStyles.cardValue),
+                            ],
+                          ),
+                          const SizedBox(width: 8),
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text('Humidity',
+                                  style: MyAppTextStyles.cardTitle),
+                              const SizedBox(height: 8),
+                              Text(data.humidity.toString(),
+                                  style: MyAppTextStyles.cardValue),
+                            ],
+                          ),
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text('Wind Speed',
+                                  style: MyAppTextStyles.cardTitle),
+                              const SizedBox(height: 8),
+                              Text(
+                                  state.weatherCurrentModel!.wind.speed
+                                      .toString(),
+                                  style: MyAppTextStyles.cardValue),
+                            ],
+                          ),
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text('Visibility',
+                                  style: MyAppTextStyles.cardTitle),
+                              const SizedBox(height: 8),
+                              Text(
+                                  state.weatherCurrentModel!.visibility
+                                      .toString(),
+                                  style: MyAppTextStyles.cardValue),
+                            ],
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    );
+                  }
+                  return FrostedGlassBox(
+                    width: size.width * 0.9,
+                    height: size.height * 0.12,
+                    child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Sunset', style: MyAppTextStyles.cardTitle),
+                            SizedBox(height: 8),
+                            Text('5:51PM', style: MyAppTextStyles.cardValue),
+                          ],
+                        ),
+                        SizedBox(width: 8),
+                        Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Sunset', style: MyAppTextStyles.cardTitle),
+                            SizedBox(height: 8),
+                            Text('5:51PM', style: MyAppTextStyles.cardValue),
+                          ],
+                        ),
+                        Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Sunset', style: MyAppTextStyles.cardTitle),
+                            SizedBox(height: 8),
+                            Text('5:51PM', style: MyAppTextStyles.cardValue),
+                          ],
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 40),
               Row(
@@ -147,39 +282,6 @@ class _HomePageState extends State<HomePage> {
                     _buildGlassForecastCard('5PM', '12°', Icons.cloud),
                     _buildGlassForecastCard('6PM', '8°', Icons.beach_access),
                     _buildGlassForecastCard('7PM', '9°', Icons.bolt),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              FrostedGlassBox(
-                width: size.width * 0.9,
-                height: size.height * 0.12,
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.wb_sunny, color: Colors.white),
-                    SizedBox(width: 8),
-                    Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Sunset', style: MyAppTextStyles.cardTitle),
-                        SizedBox(height: 8),
-                        Text('5:51PM', style: MyAppTextStyles.cardValue),
-                      ],
-                    ),
-                    Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Sunset', style: MyAppTextStyles.cardTitle),
-                        SizedBox(height: 8),
-                        Text('5:51PM', style: MyAppTextStyles.cardValue),
-                      ],
-                    ),
-                    Spacer(),
                   ],
                 ),
               ),
@@ -254,22 +356,43 @@ class _HomePageState extends State<HomePage> {
 }
 
 class LocationWidget extends StatelessWidget {
-  const LocationWidget({
+  LocationWidget({
     super.key,
   });
+  final TextEditingController locationText = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final size=MediaQuery.of(context).size;
     return BlocBuilder<LocationBloc, LocationState>(
       builder: (context, state) {
         if (state.country != null) {
           BlocProvider.of<WeatherBloc>(context)
               .add(FetchCurrentWeather(city: state.country!));
-          return Text(
-            state.country!.toUpperCase(),
+          locationText.text = state.country!;
+          return TextField(
+            onTapOutside: (event) => FocusScope.of(context).unfocus(),
             style: MyAppTextStyles.subtitle.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.bold,
+            ),
+            controller: locationText,
+            decoration: InputDecoration(
+              labelStyle: MyAppTextStyles.subtitle,
+              labelText: 'Current Location',
+              prefixIcon: Icon(Icons.location_on_outlined,color: MyAppColors.forecastText,),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                },
+                icon: Icon(Icons.search),
+                color: MyAppColors.forecastText,
+              ),
+              enabledBorder:
+                  OutlineInputBorder(borderSide: BorderSide.none),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: MyAppColors.forecastText),
+              ),
             ),
           );
         }
