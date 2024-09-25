@@ -1,13 +1,37 @@
 import 'dart:ui';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:weatherapp_zeoptic/blocs/loctionbloc/location_bloc.dart';
 import 'package:weatherapp_zeoptic/utils/appcolors.dart.dart';
 import 'package:weatherapp_zeoptic/utils/appdimensions.dart';
 import 'package:weatherapp_zeoptic/utils/apptextstyles.dart';
 import 'package:weatherapp_zeoptic/view/widgets/froastedglassbox.dart';
 
-class HomePage extends StatelessWidget {
+class HomePageWrapper extends StatelessWidget {
+  const HomePageWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => LocationBloc(),
+      child: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<LocationBloc>(context).add(FetchLocationEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,63 +53,63 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 30),
-              Text(
-                'INDIA',
-                style: MyAppTextStyles.subtitle.copyWith(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              LocationWidget(),
+              // TextField(),
               const Text(
                 'Current Location',
                 style: MyAppTextStyles.subtitle,
               ),
               const SizedBox(height: 20),
-              const Icon(Icons.cloud, color: Colors.white, size: 100),
-              const Text('13°', style: MyAppTextStyles.mainTemperature),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.cloud, color: Colors.white, size: 100),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text('13°', style: MyAppTextStyles.mainTemperature),
+                ],
+              ),
               const SizedBox(height: 10),
               const Text(
                 'Partly Cloud - H:17° L:4°',
                 style: MyAppTextStyles.subtitle,
               ),
               const SizedBox(height: 40),
-              Container(
-                decoration: BoxDecoration(
-                  color: MyAppColors.buttonUnselected,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Today Button
-                    Expanded(
-                      child: Container(
-                        height: MyAppDimensions.buttonHeight,
-                        decoration: BoxDecoration(
-                          color: MyAppColors.buttonSelected,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Today',
-                            style: MyAppTextStyles.cardTitle,
-                          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: MyAppDimensions.buttonHeight,
+                      decoration: BoxDecoration(
+                        color: MyAppColors.buttonSelected,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Today',
+                          style: MyAppTextStyles.cardTitle,
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        height: MyAppDimensions.buttonHeight,
-                        child: const Center(
-                          child: Text(
-                            'Next Days',
-                            style: MyAppTextStyles.cardTitle,
-                          ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: MyAppDimensions.buttonHeight,
+                      decoration: BoxDecoration(
+                        color: MyAppColors.buttonUnselected,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Next Days',
+                          style: MyAppTextStyles.cardTitle,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -101,7 +125,9 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               FrostedGlassBox(
                 width: size.width * 0.9,
                 height: size.height * 0.12,
@@ -109,8 +135,8 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(Icons.wb_sunny, color: Colors.white),
-                        SizedBox(width: 8),
-                        Spacer(),
+                    SizedBox(width: 8),
+                    Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -139,7 +165,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-   Widget _buildGlassForecastCard(String time, String temp, IconData icon) {
+  Widget _buildGlassForecastCard(String time, String temp, IconData icon) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: Container(
@@ -164,8 +190,11 @@ class HomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(time, style: MyAppTextStyles.subtitle.copyWith(fontSize: 14)),
-                  Icon(icon, size: MyAppDimensions.forecastIconSize, color: Colors.white),
+                  Text(time,
+                      style: MyAppTextStyles.subtitle.copyWith(fontSize: 14)),
+                  Icon(icon,
+                      size: MyAppDimensions.forecastIconSize,
+                      color: Colors.white),
                   Text(temp, style: MyAppTextStyles.forecastTemperature),
                 ],
               ),
@@ -195,6 +224,36 @@ class HomePage extends StatelessWidget {
           Text(value, style: MyAppTextStyles.cardValue),
         ],
       ),
+    );
+  }
+}
+
+class LocationWidget extends StatelessWidget {
+  const LocationWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LocationBloc, LocationState>(
+      builder: (context, state) {
+        if (state.country != null) {
+          return Text(
+            state.country!.toUpperCase(),
+            style: MyAppTextStyles.subtitle.copyWith(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          );
+        }
+        return Text(
+          'Please wait...',
+          style: MyAppTextStyles.subtitle.copyWith(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      },
     );
   }
 }
