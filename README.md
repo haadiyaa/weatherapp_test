@@ -14,17 +14,19 @@ This is a weather app built with Flutter that fetches real-time weather data for
 - An IDE like Android Studio or VS Code with Flutter and Dart plugins.  
 - API Key for the weather data provider (OpenWeatherMap/Weather API).  
 ### Setup   
-- Clone the repository:  
+- Clone the repository:
 `git clone https://github.com/haadiyaa/weatherapp_test.git`
-- Navigate to the project directory:  
+- Navigate to the project directory:
 `cd flutter-weather-app`
 - Install dependencies:
 `flutter pub get  `
-- Add your API key to the appropriate file (e.g., in the lib/services/weather_service.dart):  
+- Add your API key to the appropriate file (e.g., in the lib/services/weather_service.dart):
 `const String apiKey = 'YOUR_API_KEY';`
-- Run the app on your device:  
+- Run the app on your device:
 `flutter run  `
 ### Screenshots  
+
+![UI ScreenShot](./assets/images/screenshot-1727369196141.png)
 
 ### Dependencies:
 - Flutter
