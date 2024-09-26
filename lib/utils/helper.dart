@@ -20,12 +20,12 @@ class Helper {
   }
 
   String formatTo12Hour(String dateTimeString) {
-    // Parse the input string to DateTime object
     DateTime dateTime = DateTime.parse(dateTimeString);
-
-    // Format DateTime to 12-hour time format
     String formattedTime = DateFormat('hh:mm a').format(dateTime);
-
     return formattedTime;
   }
+
+  double convertToFahrenheit(double celsius) {
+  return (celsius * 9 / 5) + 32;
+}
 }

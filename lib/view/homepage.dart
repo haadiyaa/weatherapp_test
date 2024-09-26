@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:weatherapp_zeoptic/blocs/loctionbloc/location_bloc.dart';
+import 'package:weatherapp_zeoptic/blocs/togglecubit/toggle_cubit.dart';
 import 'package:weatherapp_zeoptic/blocs/weatherbloc/weather_bloc.dart';
+import 'package:weatherapp_zeoptic/main.dart';
 import 'package:weatherapp_zeoptic/model/weathercurrentmodel.dart';
 import 'package:weatherapp_zeoptic/utils/appcolors.dart.dart';
 import 'package:weatherapp_zeoptic/utils/appconstants.dart';
@@ -23,6 +25,9 @@ class HomePageWrapper extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => WeatherBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ToggleCubit(),
         ),
       ],
       child: const HomePage(),
@@ -99,18 +104,32 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, state) {
                   if (state.weatherCurrentModel != null) {
                     final temp = state.weatherCurrentModel!.main.temp;
+
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image(
                           image: AssetImage(MyAppConstants.icons[
                               state.weatherCurrentModel!.weather[0].main]),
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text('${temp.toStringAsFixed(0)}\u00B0 C',
-                            style: MyAppTextStyles.mainTemperature),
+                        BlocBuilder<ToggleCubit, bool>(
+                          builder: (context, isFaranheitt) {
+                            final displayTemp = isFaranheitt
+                                ? Helper().convertToFahrenheit(temp)
+                                : temp;
+                            return Text(
+                                isFaranheitt
+                                    ? '${displayTemp.toStringAsFixed(0)}\u00B0 F'
+                                    : '${displayTemp.toStringAsFixed(0)}\u00B0 C',
+                                style: MyAppTextStyles.mainTemperature);
+                          },
+                        )
                       ],
                     );
                   }
@@ -150,6 +169,28 @@ class _HomePageState extends State<HomePage> {
                   return const Text(
                     '_ _ _ -_ _ _ _',
                     style: MyAppTextStyles.subtitle,
+                  );
+                },
+              ),
+              BlocBuilder<ToggleCubit, bool>(
+                builder: (context, isFaranheitt) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Celsius"),
+                      Switch(
+                        trackOutlineColor: MaterialStateProperty.all(MyAppColors.transparent),
+                        inactiveThumbColor: MyAppColors.forecastText,
+                        inactiveTrackColor: MyAppColors.backgroundBottom,
+                        activeTrackColor: MyAppColors.forecastText,
+                        activeColor: MyAppColors.backgroundBottom,
+                        value: isFaranheitt,
+                        onChanged: (value) {
+                          context.read<ToggleCubit>().toggleUnit();
+                        },
+                      ),
+                      const Text("Fahrenheit"),
+                    ],
                   );
                 },
               ),
@@ -247,14 +288,14 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           height: 100,
                           child: ListView.builder(
-                            itemCount:  model!.list.length,
+                            itemCount: model!.list.length,
                             itemBuilder: (context, index) =>
                                 _buildGlassForecastCard(
                                     Helper().formatTo12Hour(
                                         model.list[index].dtTxt.toString()),
                                     '${model.list[index].main.temp.toStringAsFixed(0)}\u00B0',
-                                    MyAppConstants
-                                        .icons[model.list[index].weather[0].main]),
+                                    MyAppConstants.icons[
+                                        model.list[index].weather[0].main]),
                             scrollDirection: Axis.horizontal,
                           ),
                         ),
@@ -305,18 +346,15 @@ class _HomePageState extends State<HomePage> {
                           scrollDirection: Axis.horizontal,
                           children: [
                             _buildGlassForecastCard(
-                                'Now', '13°', MyAppConstants
-                                        .icons['Rain']),
+                                'Now', '13°', MyAppConstants.icons['Rain']),
                             _buildGlassForecastCard(
-                                '4PM', '14°', MyAppConstants
-                                        .icons['Rain']),
-                            _buildGlassForecastCard('5PM', '12°', MyAppConstants
-                                        .icons['Rain']),
+                                '4PM', '14°', MyAppConstants.icons['Rain']),
                             _buildGlassForecastCard(
-                                '6PM', '8°',MyAppConstants
-                                        .icons['Rain']),
-                            _buildGlassForecastCard('7PM', '9°', MyAppConstants
-                                        .icons['Rain']),
+                                '5PM', '12°', MyAppConstants.icons['Rain']),
+                            _buildGlassForecastCard(
+                                '6PM', '8°', MyAppConstants.icons['Rain']),
+                            _buildGlassForecastCard(
+                                '7PM', '9°', MyAppConstants.icons['Rain']),
                           ],
                         ),
                       ),
