@@ -7,3 +7,15 @@ class FetchCurrentWeather extends WeatherEvent {
 
   FetchCurrentWeather({required this.city});
 }
+
+class FetchForecastWeather extends WeatherEvent {
+  final String city;
+
+  FetchForecastWeather({required this.city});
+}
+
+// class SearchCurrentWeather extends WeatherEvent {
+//   final String city;
+
+//   SearchCurrentWeather({required this.city});
+// }

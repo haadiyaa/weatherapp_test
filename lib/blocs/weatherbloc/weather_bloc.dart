@@ -13,6 +13,7 @@ part 'weather_state.dart';
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   WeatherBloc() : super(WeatherState()) {
     on<FetchCurrentWeather>(_currentLocation);
+    on<FetchForecastWeather>(_fetchForecast);
   }
 
   Future<void> _currentLocation(
@@ -27,10 +28,54 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         final data = jsonDecode(response.body);
         print('DATA : $data');
         print('data fetched');
-
         _weather = WeatherCurrentModel.fromJson(data);
         print('WEATHER : ${_weather!.main!.temp}');
         emit(state.copyWith(weatherCurrentModel: _weather));
+      } else {
+        print('_error');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  // Future<void> _searchLocation(SearchCurrentWeather event, Emitter<WeatherState> emit) async {
+  //   WeatherCurrentModel? _weather;
+  //   try {
+  //     final apiUrl =
+  //         "${Secrets.baseUrlCurrent}${Secrets.city}${event.city}&appid=${Secrets.apiKey}&units=metric";
+  //     final response = await http.get(Uri.parse(apiUrl));
+
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       print('DATA : $data');
+  //       print('data fetched');
+
+  //       _weather = WeatherCurrentModel.fromJson(data);
+  //       print('WEATHER : ${_weather!.main!.temp}');
+  //       emit(state.copyWith(searchCurrentWeather: _weather,location: event.city));
+  //     } else {
+  //       print('_error');
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
+
+  Future<void> _fetchForecast(FetchForecastWeather event, Emitter<WeatherState> emit) async {
+    ForecastWeatherModel? _weather;
+    try {
+      final apiUrl =
+          "${Secrets.baseUrl3hr}${Secrets.city}${event.city}&appid=${Secrets.apiKey}&units=metric";
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('DATA : $data');
+        print('data fetched');
+        _weather = ForecastWeatherModel.fromMap(data);
+        print('city : ${_weather.city.name}');
+        emit(state.copyWith(weatherModel: _weather));
       } else {
         print('_error');
       }
