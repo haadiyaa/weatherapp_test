@@ -26,7 +26,7 @@ This is a weather app built with Flutter that fetches real-time weather data for
 `flutter run  `
 ### Screenshots  
 
-<img src="assets/images/screenshot-1727369196141.png" alt="Weather App Screenshot" height="100"/>
+<img src="assets/images/screenshot-1727369196141.png" alt="Weather App Screenshot" height="400"/>
 
 ### Dependencies:
 - Flutter
