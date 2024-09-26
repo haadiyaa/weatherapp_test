@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weatherapp_zeoptic/view/homepage.dart';
+import 'package:weatherapp_zeoptic/view/screens/homepage.dart';
 
 void main() {
   runApp(const MyApp());
