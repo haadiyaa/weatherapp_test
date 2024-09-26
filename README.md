@@ -39,5 +39,5 @@ This is a weather app built with Flutter that fetches real-time weather data for
 This app uses OpenWeatherMap API. Make sure to sign up and get your API key to fetch weather data.  
 
 ### APK File
-You can download the .apk file [here]().  
+You can download the .apk file [here](build/app/outputs/flutter-apk/app-release.apk).  
 
