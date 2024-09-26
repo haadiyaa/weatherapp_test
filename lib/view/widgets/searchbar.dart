@@ -33,7 +33,7 @@ class _MySearchBarState extends State<MySearchBar> {
             child: TextField(
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               style: MyAppTextStyles.subtitle.copyWith(
-                fontSize: 28,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
               onTap: () {
@@ -43,8 +43,8 @@ class _MySearchBarState extends State<MySearchBar> {
               decoration: const InputDecoration(
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                labelStyle: MyAppTextStyles.subtitle,
-                labelText: 'Search by City',
+                hintStyle: MyAppTextStyles.subtitle,
+                hintText: 'Search by City',
                 enabledBorder:
                     OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: UnderlineInputBorder(

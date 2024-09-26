@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 25),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -79,12 +79,12 @@ class _HomePageState extends State<HomePage> {
               MySearchBar(size: size, locationText: locationText),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
-                  if (state.weather==Weather.current) {
+                  if (state.weather == Weather.current) {
                     final temp = state.weatherCurrentModel!;
 
                     return Temperature(temp: temp);
                   }
-                  if (state.weather==Weather.search) {
+                  if (state.weather == Weather.search) {
                     final temp = state.searchCurrentWeather!;
 
                     return Temperature(temp: temp);
@@ -104,11 +104,11 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 5),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
-                  if (state.weather==Weather.current) {
+                  if (state.weather == Weather.current) {
                     final desc = state.weatherCurrentModel!;
                     return Description(desc: desc);
                   }
-                  if (state.weather==Weather.search) {
+                  if (state.weather == Weather.search) {
                     final desc = state.searchCurrentWeather!;
                     return Description(desc: desc);
                   }
@@ -130,11 +130,11 @@ class _HomePageState extends State<HomePage> {
               ),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
-                  if (state.weather==Weather.current) {
+                  if (state.weather == Weather.current) {
                     final data = state.weatherCurrentModel!;
                     return ValuesTile(size: size, data: data);
                   }
-                  if (state.weather==Weather.search) {
+                  if (state.weather == Weather.search) {
                     final data = state.searchCurrentWeather!;
                     return ValuesTile(size: size, data: data);
                   }
@@ -155,9 +155,8 @@ class _HomePageState extends State<HomePage> {
                           parsedDate.month == now.month &&
                           parsedDate.day == now.day) {
                         weather.add(i);
-                      }
+                      } 
                     }
-                    print(weather);
                     return Column(
                       children: [
                         Row(
@@ -197,8 +196,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 20),
                         SizedBox(
-                          height: 100,
+                          height: 150,
                           child: ListView.builder(
+                            padding: EdgeInsets.only(bottom: 20),
                             itemCount: weather.length,
                             itemBuilder: (context, index) => BuildGlassCard(
                               time: Helper().formatTo12Hour(
