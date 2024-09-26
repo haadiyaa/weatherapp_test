@@ -14,6 +14,7 @@ import 'package:weatherapp_zeoptic/view/widgets/description.dart';
 import 'package:weatherapp_zeoptic/view/widgets/loaders/forecastshimmer.dart';
 import 'package:weatherapp_zeoptic/view/widgets/loaders/todaytomorrowshimmer.dart';
 import 'package:weatherapp_zeoptic/view/widgets/locationwidget.dart';
+import 'package:weatherapp_zeoptic/view/widgets/searchbar.dart';
 import 'package:weatherapp_zeoptic/view/widgets/temperature.dart';
 import 'package:weatherapp_zeoptic/view/widgets/valuestile.dart';
 
@@ -75,39 +76,16 @@ class _HomePageState extends State<HomePage> {
             children: [
               const SizedBox(height: 30),
               LocationWidget(),
-              // TextField(
-              //   onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              //   style: MyAppTextStyles.subtitle.copyWith(
-              //     fontSize: 28,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              //   onTap: (){print('tapped');},
-              //   controller: locationText,
-              //   decoration: InputDecoration(
-              //     contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-              //     labelStyle: MyAppTextStyles.subtitle,
-              //     labelText: 'Search by City',
-              //     suffixIcon: IconButton(
-              //       onPressed: () {
-              //         print('searched');
-              //         // FocusScope.of(context).unfocus();
-              //         BlocProvider.of<WeatherBloc>(context).add(FetchCurrentWeather(city: locationText.text));
-              //         locationText.clear();
-              //       },
-              //       icon: const Icon(Icons.search),
-              //       color: MyAppColors.forecastText,
-              //     ),
-              //     enabledBorder:
-              //         const OutlineInputBorder(borderSide: BorderSide.none),
-              //     focusedBorder: const UnderlineInputBorder(
-              //       borderSide: BorderSide(color: MyAppColors.forecastText),
-              //     ),
-              //   ),
-              // ),
+              MySearchBar(size: size, locationText: locationText),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
-                  if (state.weatherCurrentModel != null) {
+                  if (state.weather==Weather.current) {
                     final temp = state.weatherCurrentModel!;
+
+                    return Temperature(temp: temp);
+                  }
+                  if (state.weather==Weather.search) {
+                    final temp = state.searchCurrentWeather!;
 
                     return Temperature(temp: temp);
                   }
@@ -126,8 +104,12 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 5),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
-                  if (state.weatherCurrentModel != null) {
+                  if (state.weather==Weather.current) {
                     final desc = state.weatherCurrentModel!;
+                    return Description(desc: desc);
+                  }
+                  if (state.weather==Weather.search) {
+                    final desc = state.searchCurrentWeather!;
                     return Description(desc: desc);
                   }
                   return const Text(
@@ -148,8 +130,12 @@ class _HomePageState extends State<HomePage> {
               ),
               BlocBuilder<WeatherBloc, WeatherState>(
                 builder: (context, state) {
-                  if (state.weatherCurrentModel != null) {
+                  if (state.weather==Weather.current) {
                     final data = state.weatherCurrentModel!;
+                    return ValuesTile(size: size, data: data);
+                  }
+                  if (state.weather==Weather.search) {
+                    final data = state.searchCurrentWeather!;
                     return ValuesTile(size: size, data: data);
                   }
                   return TodayTomorrw(size: size);
